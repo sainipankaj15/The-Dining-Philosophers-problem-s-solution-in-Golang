@@ -14,7 +14,8 @@ var totalRoundOfEatingPerPerson int = 2
 var persons = []string{"Pankaj", "Rakesh", "Mahesh"}
 var wg sync.WaitGroup
 var sleepTime time.Duration = 1 * time.Second
-var eatingTime time.Duration = 5 * time.Second
+var eatingTime time.Duration = 3 * time.Second
+var thinkingTime time.Duration = 1 * time.Second
 
 func diningProblem(person string, leftHand, rightHand *sync.Mutex, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -23,31 +24,33 @@ func diningProblem(person string, leftHand, rightHand *sync.Mutex, wg *sync.Wait
 	time.Sleep(sleepTime)
 
 	// Total Rounds per Person
-	for i := 1 ; i <= totalRoundOfEatingPerPerson ; i++ {
+	for i := 1; i <= totalRoundOfEatingPerPerson; i++ {
 		fmt.Println(person, "is Hungry")
 		time.Sleep(sleepTime)
 
 		// Have to lock both fork
-		// Lock left fork 
+		// Lock left fork
 		leftHand.Lock()
-		fmt.Println(person , "Picked Left fork")
-		// Lock right fork 
+		fmt.Println(person, "Picked Left fork")
+		// Lock right fork
 		rightHand.Lock()
-		fmt.Println(person , "Picked Right fork")
-		
-		
-		// Now he will eat 
-		fmt.Println(person , "is eating as he has both forks")
+		fmt.Println(person, "Picked Right fork")
+
+		// Now he will eat
+		fmt.Println(person, "is eating as he has both forks")
 		time.Sleep(eatingTime)
-		
+
+		// He will think for sometime 
+		fmt.Println(person, "is thinking")
+		time.Sleep(thinkingTime)
 
 		// Have to unlock both fork
-		// UnLock left fork 
+		// UnLock left fork
 		leftHand.Unlock()
-		fmt.Println(person , "put down Left fork")
-		// UnLock right fork 
+		fmt.Println(person, "put down Left fork")
+		// UnLock right fork
 		rightHand.Unlock()
-		fmt.Println(person , "put down Right fork")
+		fmt.Println(person, "put down Right fork")
 
 		time.Sleep(sleepTime)
 	}
