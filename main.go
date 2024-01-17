@@ -16,6 +16,8 @@ var wg sync.WaitGroup
 var sleepTime time.Duration = 1 * time.Second
 var eatingTime time.Duration = 3 * time.Second
 var thinkingTime time.Duration = 1 * time.Second
+var orderMutex sync.Mutex
+var whoFinishedFirst = []string{}
 
 func diningProblem(person string, leftHand, rightHand *sync.Mutex, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -40,7 +42,7 @@ func diningProblem(person string, leftHand, rightHand *sync.Mutex, wg *sync.Wait
 		fmt.Println(person, "is eating as he has both forks")
 		time.Sleep(eatingTime)
 
-		// He will think for sometime 
+		// He will think for sometime
 		fmt.Println(person, "is thinking")
 		time.Sleep(thinkingTime)
 
@@ -59,6 +61,10 @@ func diningProblem(person string, leftHand, rightHand *sync.Mutex, wg *sync.Wait
 	time.Sleep(sleepTime)
 
 	fmt.Println(person, "left the table")
+
+	orderMutex.Lock()
+	whoFinishedFirst = append(whoFinishedFirst, person)
+	orderMutex.Unlock()
 
 }
 
@@ -83,4 +89,11 @@ func main() {
 	}
 
 	wg.Wait()
+
+	fmt.Println("Left is Empty Now.")
+	fmt.Println("Order of Person who finished first")
+
+	for _, name := range whoFinishedFirst {
+		fmt.Println(name)
+	}
 }
